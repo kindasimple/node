@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h1= title
+  ul
+    each item, position in members
+      li #{position + 1} : #{item}
+      if position === 0
