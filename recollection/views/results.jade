@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  title Results for #{title}
+  h1 Results for #{title}
+  ul
+    each item, position in results
+      li #{position + 1} : #{item.encoding}
+    if results.length === 0
+        h2 Couldn't find any results
