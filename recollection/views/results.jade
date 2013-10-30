@@ -2,9 +2,28 @@ extends layout
 
 block content
   title Results for #{title}
+  h3 
+    a(href='/') Recollection
   h1 Results for #{title}
-  ul
-    each item, position in results
-      li #{position + 1} : #{item.encoding}
+  div.container
+    div.content
+      table.table.table-striped
+        thead
+          tr
+            th #
+            th Mnemonic
+        tbody
+        each item, position in results
+          tr
+            td #{position + 1} 
+            td #{item.encoding}
+            td 
+              form(id='form#{position}' action='/results/#{title}/#{item._id}',method='post')
+                  div(data-role='fieldcontain')
+                     input(id='mnemonic_id',type='hidden',value='#{item._id}',name='mnemonic_id')
+                     input(id='numbers',type='hidden',value='#{title}',name='numbers')
+                     input(id='mnemonic',type='hidden',value='#{item.encoding}',name='mnemonic')
+                  div(data-role='fieldcontain')   
+                    input(type='submit',value='Collect',data-transition='fade', data-theme='c') 
     if results.length === 0
-        h2 Couldn't find any results
+      h2 Couldn't find any results

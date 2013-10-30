@@ -1,13 +1,30 @@
 extends layout
-
+ 
 block content
   h1= title
-  p Welcome to #{title}
-  div
+  p Enter a number to find words Major System encoded with that number's phonetic fingerprint
+  div.top
     form(action='/',method='post')
       div(data-role='fieldcontain')
         fieldset(data-role='controlgroup')
-          label(for='numbers') numbers
+          label(for='numbers') numbers 
             input(id='numbers',type='text',value='',placeholder='',name='numbers')
       div(data-role='fieldcontain')   
-        input(type='submit',value='Find Mnemonic',data-transition='fade', data-theme='c')
+        input(type='submit',value='Find Mnemonic',data-transition='fade', data-theme='c')     
+      
+  div.container
+    div.content
+      table.table.table-striped
+        thead
+          tr
+            th Numbers
+            th Mnemonic
+        tbody
+        each item, position in savedMnemonics
+          tr
+            td #{item.numbers}
+            td #{item.mnemonic} 
+      if savedMnemonics.length === 0
+        h2 no saved mnemonics
+ 
+  div.footer

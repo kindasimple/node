@@ -29,6 +29,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 app.post('/', routes.numbers);
+app.post('/results/:query/:mnemonic_id', routes.saveMnemonic);
 
 app.get('/', routes.index);
 app.get('/users', user.list);
@@ -36,9 +37,11 @@ app.get('/results', routes.index);
 app.get('/results/:query', routes.results);
 
 
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
-  populateDatabase();
+  
+  //populateDatabase();
 });
 
 function populateDatabase()
