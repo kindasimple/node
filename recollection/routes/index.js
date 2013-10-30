@@ -40,6 +40,28 @@ exports.results = function(req, res){
    
 };
 
+exports.json = function(req, res){
+  // Retrieve
+  var MongoClient = require('mongodb').MongoClient;
+
+  // Connect to the db
+  MongoClient.connect("mongodb://localhost:27017/recollection", function(err, db) {
+  if(err) { return console.dir(err); }
+  
+  var collection = db.collection('dictionary');
+  console.log(req.param('numbers'));
+    var result = collection.find({numbers:req.param('numbers')}, {encoding:1, numbers:1, _id:0}).toArray(function (err, docs) {
+        //console.log(docs);
+        // Setting the appropriate Content-Type
+            res.set('Content-Type', 'text/json');
+
+            // Sending the feed as a response
+            res.send(docs);
+    });
+})
+   
+};
+
 exports.saveMnemonic = function(req, res){
   var pageContent = {title: req.param('query')};
   console.log("redirecting to " + req.body.numbers);
