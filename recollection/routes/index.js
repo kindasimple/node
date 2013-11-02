@@ -10,7 +10,8 @@ exports.index = function(req, res){
     req.session.savedMnemonics = [];
   }
   console.log(req.session.savedMnemonics);
-  res.render('index', { title: 'Recollection', savedMnemonics : req.session.savedMnemonics});
+  console.log("Saved Image: " + req.session.savedImagePath);
+  res.render('index', { title: 'Recollection', savedMnemonics : req.session.savedMnemonics, savedImagePath:req.session.savedImagePath});
 };
 
 exports.numbers = function(req, res){
@@ -86,6 +87,18 @@ exports.apiEntry = function(req, res){
     });
 })
 };
+
+exports.uploads = function(req, res){
+  var fs = require('fs');
+  fs.readFile(req.files.displayImage.path, function (err, data) {
+    var newPath = __dirname + "/../public/uploads/abc.jpg";
+    console.log("upload file path: " + newPath);
+    fs.writeFile(newPath, data, function (err) {
+      req.session.savedImagePath = "uploads/abc.jpg";
+      res.redirect("back");
+    });
+  });
+}
 
 exports.saveMnemonic = function(req, res){
   var pageContent = {title: req.param('query')};

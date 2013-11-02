@@ -3,15 +3,20 @@ extends layout
 block content
   h1= title
   p Enter a number to find words Major System encoded with that number's phonetic fingerprint
+  style
+    div.left {
+        float:left;
+    }
   div.top
     form(action='/',method='post')
-      div(data-role='fieldcontain')
-        fieldset(data-role='controlgroup')
-          label(for='numbers') numbers 
-            input(id='numbers',type='text',value='',placeholder='',name='numbers')
-      div(data-role='fieldcontain')   
-        input(type='submit',value='Find Mnemonic',data-transition='fade', data-theme='c')     
-      
+        div(data-role="horizontal", data-theme="a", data-overlay-theme="a", data-inline="true")
+            div.left(class='ui-block-a', style="margin-right: 5px;")
+                div(data-role='fieldcontain')
+                    label(for='numbers') Numbers
+                    input(id='numbers',type='text',value='',placeholder='',name='numbers')
+            div.left(data-role="horizontal", data-theme="a" style="margin-top:27px;")
+                div(data-role="fieldcontain")
+                    input(type='submit',value='Find Mnemonic',data-transition='fade', data-theme='a')     
   div.container
     div.content
       table.table.table-striped
@@ -44,5 +49,10 @@ block content
             
       if savedMnemonics.length === 0
         h2 no saved mnemonics
+        
+      form(action="/uploads", method="post", enctype="multipart/form-data")
+        input(type="file", name="displayImage")
+        input(type='submit',value='Upload',data-transition='fade', data-theme='c')
+      img(src="#{savedImagePath}")
  
   div.footer
