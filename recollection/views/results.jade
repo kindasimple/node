@@ -4,8 +4,27 @@ block content
   title Results for #{title}
   h3 
     a(href='/') Recollection
-  h1 Results for #{title}
-    img(src="/images/major_system.gif")
+  script(type='text/javascript').
+    function showHelp(){
+      $('#major_system_image').show();
+      $('#showHelp').hide();
+      $('#hideHelp').show();
+    }
+    function hideHelp(){
+      $('#major_system_image').hide();
+      $('#showHelp').show();
+      $('#hideHelp').hide();
+    }
+  div.left
+    h1 Results for #{title} 
+  style
+    div.left {
+        float:left;
+    }
+  div.left
+    <a id='showHelp' href="javascript:showHelp();">?</a>
+    <a id='hideHelp' href="javascript:hideHelp();" style="display:none">x</a>
+  img(id='major_system_image' src="/images/major_system.gif" style="display:none")
   div.container
     div.content
       table.table.table-striped
@@ -24,6 +43,7 @@ block content
                      input(id='mnemonic_id',type='hidden',value='#{item._id}',name='mnemonic_id')
                      input(id='numbers',type='hidden',value='#{title}',name='numbers')
                      input(id='mnemonic',type='hidden',value='#{item.encoding}',name='mnemonic')
+                     input(id='phoneme',type='hidden',value='#{item.phoneme}',name='phoneme')
                   div(data-role='fieldcontain')   
                     input(type='submit',value='Collect',data-transition='fade', data-theme='c') 
     if results.length === 0

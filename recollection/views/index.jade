@@ -19,11 +19,29 @@ block content
           tr
             th Numbers
             th Mnemonic
+            th Phoneme
         tbody
         each item, position in savedMnemonics
           tr
             td #{item.numbers}
             td #{item.mnemonic} 
+            td 
+              script(type='text/javascript').
+                function playAudio#{position}(){
+                  $("audio").each(function( index ) {
+                    $(this).bind("ended", function(){
+                      $(this).next().get(0).play();
+                    });
+                  });
+                
+                  document.getElementById('audio' + '#{item.mnemonic}' + '0').play();
+                }
+              <a href="javascript:playAudio#{position}();">#{item.phoneme} </a>
+            td
+              each phoneme, phoneme_position in item.phonemeList
+                audio(id='audio#{item.mnemonic}#{phoneme_position}', preload="auto", autobuffer)
+                  source(src='audio/cmu/#{phoneme}.wav')
+            
       if savedMnemonics.length === 0
         h2 no saved mnemonics
  

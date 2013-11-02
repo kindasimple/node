@@ -35,7 +35,9 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 app.get('/results', routes.index);
 app.get('/results/:query', routes.results);
-app.get('/api/1/mnemonics/:numbers.json', routes.json);
+
+app.get('/api/1/mnemonics/:numbers.json', routes.apiNumbers);
+app.get('/api/1/entry/:id.json', routes.apiEntry);
 
 
 
@@ -48,7 +50,7 @@ http.createServer(app).listen(app.get('port'), function(){
 function populateDatabase()
 {
   var fs = require('fs');
-  fs.readFile( __dirname + '/data/Words-min.js', function (err, data) {
+  fs.readFile( __dirname + '/data/dictionary-min.json', function (err, data) {
       if (err) {
         throw err; 
       }
@@ -63,7 +65,7 @@ function populateDatabase()
       var collection = db.collection('dictionary');
       for(var i=0;i<data.length;i++)
       {
-        collection.insert({numbers:data[i].Numbers,encoding:data[i].Encoding}, function(err, doc){ 
+        collection.insert({numbers:data[i].Encoding, encoding:data[i].Text, phoneme:data[i].Phoneme}, function(err, doc){ 
             if(err)
             {
                 console.log("Error inserting record into database");
