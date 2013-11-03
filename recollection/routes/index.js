@@ -11,7 +11,22 @@ exports.index = function(req, res){
   }
   console.log(req.session.savedMnemonics);
   console.log("Saved Image: " + req.session.savedImagePath);
-  res.render('index', { title: 'Recollection', savedMnemonics : req.session.savedMnemonics, savedImagePath:req.session.savedImagePath});
+  
+    // Retrieve
+  var MongoClient = require('mongodb').MongoClient;
+
+  // Connect to the db
+  MongoClient.connect("mongodb://localhost:27017/recollection", function(err, db) {
+  if(err) { return console.dir(err); }
+  
+  var collection = db.collection('mnemonics');
+    var result = collection.find({}, {mnemonics:1, pictogram:1, title:1, _id:1}).toArray(function (err, docs) {
+        console.log(docs);
+        res.render('index', { title: 'Recollection', Inventory:docs, savedMnemonics : req.session.savedMnemonics, savedImagePath:req.session.savedImagePath});
+    });
+  })
+
+  
 };
 
 exports.numbers = function(req, res){
@@ -35,10 +50,10 @@ exports.results = function(req, res){
     var result = collection.find({numbers:pageContent.title}, {encoding:1, phoneme:1}).toArray(function (err, docs) {
         //console.log(docs);
         pageContent.results = docs;
+        pageContent.savedMnemonics = req.session.savedMnemonics;
         res.render('results', pageContent);
     });
-})
-   
+  })
 };
 
 exports.apiNumbers = function(req, res){
@@ -91,10 +106,11 @@ exports.apiEntry = function(req, res){
 exports.uploads = function(req, res){
   var fs = require('fs');
   fs.readFile(req.files.displayImage.path, function (err, data) {
-    var newPath = __dirname + "/../public/uploads/abc.jpg";
+    var newFile = new Date().getTime() + "." + req.files.displayImage.name.split('.').pop();
+    var newPath = __dirname + "/../public/uploads/" + newFile;
     console.log("upload file path: " + newPath);
     fs.writeFile(newPath, data, function (err) {
-      req.session.savedImagePath = "uploads/abc.jpg";
+      req.session.savedImagePath = "uploads/" + newFile;
       res.redirect("back");
     });
   });
@@ -114,7 +130,35 @@ exports.saveMnemonic = function(req, res){
     console.log("initializing saved mnemonics");
     req.session.savedMnemonics = [{numbers:req.body.numbers,mnemonic:req.body.mnemonic, phoneme:req.body.phoneme, phonemeList:req.body.phoneme.replace(/[0-9]/g, "").split(" ")}];
   }
-  console.log('mnemonics array:');
+  console.log('mnemonics array:' + req.session.savedMnemonics);
   console.log(req.session.savedMnemonics);
   res.redirect('/results/' + req.body.numbers);
 };
+
+exports.save = function(req, res){
+
+  // Retrieve
+  var MongoClient = require('mongodb').MongoClient;
+
+  // Connect to the db
+  MongoClient.connect("mongodb://localhost:27017/recollection", function(err, db) {
+      if(err) { return console.dir(err); }
+      
+      var collection = db.collection('mnemonics');
+      console.log("saving mnemonics");
+      console.log(req.session.savedMnemonics);
+      collection.save({mnemonics:req.session.savedMnemonics, title:req.body.title, pictogram:req.session.savedImagePath}, function(err, data){
+        if(data)
+        {
+          console.log(data);
+          req.session.savedImagePath = null;
+          req.session.savedMnemonics = [];
+        }
+        else
+        {
+          console.log("Failed to save data");
+        }
+        res.redirect("back");
+      });
+  });
+}

@@ -2,8 +2,33 @@ extends layout
 
 block content
   title Results for #{title}
+  if savedMnemonics.length > 0
+    table.table.table-striped
+      thead
+        tr
+          th Numbers
+          th Mnemonic
+      tbody
+        tr
+          td 
+            each item in savedMnemonics
+              span.inline #{item.numbers},
+          td 
+            each item in savedMnemonics
+              span.inline #{item.mnemonic}, 
   h3 
     a(href='/') Recollection
+
+  div
+      form(action='/',method='post')
+        div(data-role="horizontal", data-theme="a", data-overlay-theme="a", data-inline="true")
+            div.left(class='ui-block-a', style="margin-right: 5px;")
+                div(data-role='fieldcontain')
+                    label(for='numbers') Numbers
+                    input(id='numbers',type='text',value='#{title}',placeholder='',name='numbers')
+            div.left(data-role="horizontal", data-theme="a" style="margin-top:27px;")
+                div(data-role="fieldcontain")
+                    input(type='submit',value='Find Mnemonic',data-transition='fade', data-theme='a') 
   script(type='text/javascript').
     function showHelp(){
       $('#major_system_image').show();
@@ -15,15 +40,13 @@ block content
       $('#showHelp').show();
       $('#hideHelp').hide();
     }
+  div.clear
   div.left
     h1 Results for #{title} 
-  style
-    div.left {
-        float:left;
-    }
   div.left
     <a id='showHelp' href="javascript:showHelp();">?</a>
     <a id='hideHelp' href="javascript:hideHelp();" style="display:none">x</a>
+  div.clear
   img(id='major_system_image' src="/images/major_system.gif" style="display:none")
   div.container
     div.content

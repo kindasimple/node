@@ -10,3 +10,21 @@ a {
 .hidden{
   visibility: hidden;
 }
+
+.clear
+{
+  clear:both;
+}
+.left
+{
+float:left;
+}
+.right
+{
+float:right;
+}
+.inventory
+{
+  width:200px;
+  margin: 12px 5px 12px 5px;
+}

@@ -3,6 +3,18 @@ extends layout
 block content
   h1= title
   p Enter a number to find words Major System encoded with that number's phonetic fingerprint
+  div.mnemonics
+    each abc in Inventory
+      div.right
+        div.inventory
+          h4 #{abc.title}
+          table.table.table-striped
+            each item in abc.mnemonics
+              tr
+                td #{item.numbers}
+                td #{item.mnemonic} 
+          if abc.pictogram != undefined
+            img(src="#{abc.pictogram}")
   style
     div.left {
         float:left;
@@ -16,36 +28,45 @@ block content
                     input(id='numbers',type='text',value='',placeholder='',name='numbers')
             div.left(data-role="horizontal", data-theme="a" style="margin-top:27px;")
                 div(data-role="fieldcontain")
-                    input(type='submit',value='Find Mnemonic',data-transition='fade', data-theme='a')     
+                    input(type='submit',value='Find Mnemonic',data-transition='fade', data-theme='a') 
+    div.right
+        form(action='/save',method='post')
+            div(data-role="fieldcontain")
+                label(for='title') Title
+                input(id='title',type='text',value='',placeholder='',name='title')
+                input(type='submit',value='Save',data-transition='fade', data-theme='a')
+                    
+  div.clear                    
   div.container
     div.content
-      table.table.table-striped
-        thead
-          tr
-            th Numbers
-            th Mnemonic
-            th Phoneme
-        tbody
-        each item, position in savedMnemonics
-          tr
-            td #{item.numbers}
-            td #{item.mnemonic} 
-            td 
-              script(type='text/javascript').
-                function playAudio#{position}(){
-                  $("audio").each(function( index ) {
-                    $(this).bind("ended", function(){
-                      $(this).next().get(0).play();
-                    });
-                  });
-                
-                  document.getElementById('audio' + '#{item.mnemonic}' + '0').play();
-                }
-              <a href="javascript:playAudio#{position}();">#{item.phoneme} </a>
-            td
-              each phoneme, phoneme_position in item.phonemeList
-                audio(id='audio#{item.mnemonic}#{phoneme_position}', preload="auto", autobuffer)
-                  source(src='audio/cmu/#{phoneme}.wav')
+      if savedMnemonics.length > 0
+          table.table.table-striped
+            thead
+              tr
+                th Numbers
+                th Mnemonic
+                th Phoneme
+            tbody
+            each item, position in savedMnemonics
+              tr
+                td #{item.numbers}
+                td #{item.mnemonic} 
+                td 
+                  script(type='text/javascript').
+                    function playAudio#{position}(){
+                      $("audio").each(function( index ) {
+                        $(this).bind("ended", function(){
+                          $(this).next().get(0).play();
+                        });
+                      });
+                    
+                      document.getElementById('audio' + '#{item.mnemonic}' + '0').play();
+                    }
+                  <a href="javascript:playAudio#{position}();">#{item.phoneme} </a>
+                td
+                  each phoneme, phoneme_position in item.phonemeList
+                    audio(id='audio#{item.mnemonic}#{phoneme_position}', preload="auto", autobuffer)
+                      source(src='audio/cmu/#{phoneme}.wav')
             
       if savedMnemonics.length === 0
         h2 no saved mnemonics

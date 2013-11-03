@@ -36,6 +36,7 @@ app.get('/users', user.list);
 app.get('/results', routes.index);
 app.get('/results/:query', routes.results);
 app.post('/uploads', routes.uploads);
+app.post('/save', routes.save);
 
 app.get('/api/1/mnemonics/:numbers.json', routes.apiNumbers);
 app.get('/api/1/entry/:id.json', routes.apiEntry);
